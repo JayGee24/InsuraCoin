@@ -154,6 +154,7 @@ contract InsuranceCouponRegistry is ERC721 {
       _coupons[_couponId].invalidated = true;
       return false;
     }
+    return true;
   }
 
   /**
