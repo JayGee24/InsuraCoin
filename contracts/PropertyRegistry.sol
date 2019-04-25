@@ -59,6 +59,6 @@ contract PropertyRegistry is ERC721Token {
   * @param _by address of the registrar
   * @param _tokenId uint256 represents a specific propety token
   */
-  event ProperyRegistered(address _by, uint256 _tokenId);
+  event PropertyRegistered(address _by, uint256 _tokenId);
 
 }

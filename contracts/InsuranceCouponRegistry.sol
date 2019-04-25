@@ -111,6 +111,7 @@ contract InsuranceCouponRegistry is ERC721 {
   function transferOwnershipToArbitrationContract(uint256 _couponId)
    public onlyInsuranceCompany(msg.sender){
     require( ownerOf(_couponId) == msg.sender);
+    _coupons[couponId].owner = _ab;
     transferFrom(msg.sender,_ab,couponId);
   }
 
@@ -123,6 +124,7 @@ contract InsuranceCouponRegistry is ERC721 {
   function transferOwnershipToClient(address client,
      uint256 _couponId) public onlyArbitrationContract{
     require(ownerOf(_couponId) == _ab);
+    _coupons[couponId].owner = client;
     transferFrom(_ab,client,couponId);
   }
 
