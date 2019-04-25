@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "./Tokens/ERC721.sol";
-import "./ArbitrationContract.sol"
+import "./ArbitrationContract.sol";
 
 /**
 * @title This contract inherits from ERC721 and implements and
@@ -69,7 +69,7 @@ contract InsuranceCouponRegistry is ERC721 {
   function createInsuranceCoupon(string _metadata,
     uint256 _daysAfter, address _couponOwner, uint256 _propertyId,
     uint256 _propertyRegistryAddress
-  ) public onlyInsuranceCompany {
+  ) public onlyInsuranceCompany returns (uint256){
     uint256 newCouponId  = _coupons.length;
     Coupon memory newCoupon;
     newCoupon.owner   = _couponOwner;
@@ -84,8 +84,10 @@ contract InsuranceCouponRegistry is ERC721 {
     _coupons.push(newCoupon);
 
     _mint(msg.sender, newCouponId);
-
+  
     emit CouponCreated(msg.sender,newCouponId);
+     
+     return newCouponId;
   }
 
   /**
