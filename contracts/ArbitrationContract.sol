@@ -16,46 +16,42 @@ contract ArbitrationContract {
   string public constant contractName = "ArbitrationContract";
 
   event FormalAgreementCreated(
-      uint256 indexed client;
-      uint256 indexed company;
+      address indexed client;
+      address indexed company;
   );
   event ExchangeSuccessful(
-      uint256 indexed client;
-      uint256 indexed company;
+      address indexed client;
+      address indexed company;
   );
   event ExchangeAborted(
-      uint256 indexed client;
-      uint256 indexed company;
+      address indexed client;
+      address indexed company;
   );
 
   //Insurance Coupon Registry Instance Address
   address public _icr;
 
-  //Client Contract Instance Address
-  address public _clientAPI;
-
-  //Company Contract Instance Address
-  address public _companyAPI;
-
   //List of Agreements Received
   Agreement[] internal _agreements;
 
+  //List of registered insurance companies
+  mapping(address => bool) registedInsurers;
+
+
   constuctor (
     address insuranceCouponRegistry,
-    address clientContract,
-    address companyContract
   ) {
-    _icr        = insuranceCouponRegistry;
-    _clientAPI  = clientContract;
-    _companyAPI = companyContract;
+    _icr = insuranceCouponRegistry;
   }
 
+  //Register with ArbitrationContract?
   modifier onlyClient(){
     //require(_clientAPI.isRegisteredClient(msg.sender),
     //"caller needs to be a registered client");
     _;
   }
 
+  //Register with ArbitrationContract?
   modifier onlyInsuranceCompany(){
     //require(_companyAPI.isRegisteredCompany(msg.sender));
     //"caller needs to be a registered company");
@@ -71,13 +67,13 @@ contract ArbitrationContract {
   **/
   function receiveAndCreateFormalAgreement(Agreement newAgreement)
    onlyInsuranceCompany return(uint256) {
-    uint256 clientId       = newAgreement.client;
-    uint256 companyId      = newAgreement.company;
+    address clientAddr     = newAgreement.clientAddr;
+    address companyAddr    = newAgreement.companyAddr;
     uint256 newAgreementId = _agreements.length; //monotonically increasing index
     newAgreement.id = newAgreementId;
     _agreements.push[newAgreement];
-    _clientAPI.receiveAgreement(clientId, newAgreement);
-    emit FormalAgreementCreated(_clientId, companyId);
+    clientAddr.receiveAgreement(newAgreement);
+    emit FormalAgreementCreated(clientAddr, companyAddr);
     return newAgreementId;
   }
 
@@ -85,15 +81,13 @@ contract ArbitrationContract {
   * @dev Checks if contract is coupon owner, and agreement is not expired,
   * then either facilitates or aborts exchange
   * @param  _agreementId uint256 - identify agreement
-  * @param _clientId uint256 - identify client paying for insurance coupon
   * @return allowed bool - indicate exchange success or abort
   **/
-  function signAndPay(uint256 _agreementId, uint256 _clientId) onlyClient
+  function signAndPay(uint256 _agreementId)
   returns (bool) payable {
-    Agreement ag     = _agreements[_agreementId];
-    uint256 couponId = ag.couponId;
-    require(_clientId == ag.clientId);
-    require(address(this) == _icr.ownerOf(couponId));
+    Agreement ag       = _agreements[_agreementId];
+    require(msg.sender == clientAddr);
+    require(address(this) == _icr.ownerOf(ag.couponId));
     //Signatures?
     //require(ag.clientSignature == true && ag.companySignature == true);
 
@@ -101,24 +95,55 @@ contract ArbitrationContract {
     if (msg.value < ag.couponPrice){
       allowed = false;
     }
-    if (now > ag.expirationDate || !_icr.isCouponValid(couponId)) {
+    if (now > ag.expirationDate || !_icr.isCouponValid(ag.couponId)) {
       allowed = false;
     }
     if (allowed){//Exchange Commodities
-      _icr.transferOwnershipToClient(ag.clientAddr,couponId);
-      _companyAPI.receivePayment.value(msg.value)(ag.companyId);
-      emit ExchangeSuccessful(ag.clientId, ag.companyId);
+      _icr.transferOwnershipToClient(ag.clientAddr,ag.couponId);
+      ag.companyAddr.transfer(msg.value);
+      emit ExchangeSuccessful(ag.clientAddr, ag.companyAddr);
     }else{//Refund Ether and Burn Coupon
-      _clientAPI.receiveRefund.value(msg.value)(ag.clientId);
-      _icr.burnCoupon(couponId);
-      emit ExchangeAborted(ag.clientId, ag.companyId);
+      ag.clientAddr.transfer(msg.value);
+      _icr.burnCoupon(ag.couponId);
+      emit ExchangeAborted(ag.clientAddr, ag.companyAddr);
     }
     //refund overpayment?
     if (msg.value > ag.couponPrice){
-      uint256 overpayment_refund = mag.value.sub(ag.couponPrice);
-      _clientAPI.receiveRefund.value(overpayment_refund)(ag.clientId);
+      uint256 sentAmount = msg.value;
+      uint256 overpayment_refund = sentAmount.sub(ag.couponPrice);
+      ag.clientAddr.transfer(overpayment_refund);
     }
     return allowed;
   }
 
+  /**
+  * @dev Registers company as an insurer with this registry
+  * @param insurer address
+  **/
+  function registerInsurer(address insurer) public{
+    //Deliberately skip practical validation that insurance company
+    //physically/legally exists.
+    registeredInsurers[insurer] = true;
+  }
+
+  /**
+  * @dev checks if an address is an insurance company
+  * @param insurer address
+  **/
+  function isRegisteredInsurer(address insurer) view public{
+    return registeredInsurers[insurer];
+  }
+
+  /**
+  * @dev returns a registered an insurance company
+  * @param insurer address
+  **/
+  function findRegisteredInsurer() view public returns (address) {
+    uint256 modVal =  registeredInsurers[insurer].length;
+    if (modVal == 0) {
+      return address(0);
+    }
+    uint256 idx = mod(now,modVal)
+    return registeredInsurer[idx];
+  }
 }

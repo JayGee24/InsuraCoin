@@ -5,9 +5,7 @@ library Agreement{
   struct Agreement{
     uint256 id;
     address clientAddr;
-    uint256 clientId;
     address companyAddr;
-    uint256 companyId;
     string  terms;
     bool    clientSignature;
     bool    companySignature;

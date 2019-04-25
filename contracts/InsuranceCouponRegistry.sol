@@ -43,9 +43,6 @@ contract InsuranceCouponRegistry is ERC721 {
   //Array of all coupons
   Coupon[] internal _coupons;
 
-  //List of registered insurance companies
-  mapping(address => bool) registedInsurers;
-
   constructor(
     address _arbitrationContract,
   )
@@ -54,8 +51,8 @@ contract InsuranceCouponRegistry is ERC721 {
   }
 
 
-  modifier onlyInsuranceCompany(address companyId) {
-    require(registedInsurers[companyId] == true, "msg.sender is an insurance company.");*/
+  modifier onlyInsuranceCompany() {
+    require(_ab.isRegisteredInsurer(msg.sender) == true, "msg.sender must be an insurance company.");*/
     _;
   }
 
@@ -64,27 +61,15 @@ contract InsuranceCouponRegistry is ERC721 {
     _;
   }
 
-  /**
-  * @dev Registers company as an insurer with this registry
-  * @param insurer address
-  **/
-  function registerInsurer(address insurer) public{
-    //Deliberately skip practical validation that insurance company
-    //physically/legally exists.
-    registeredInsurers[insurer] = true;
-  }
+
 
   /**
-  * @dev Creates a new coupon after checking ownership and checking a valid
-  * @dev Add expiration date
-  * @param _couponId uint256 represents a specific coupon
-  * @param _uri string containing metadata/uri
+  * @dev Creates a new coupon
   */
   function createInsuranceCoupon(string _metadata,
     uint256 _daysAfter, address _couponOwner, uint256 _propertyId,
     uint256 _propertyRegistryAddress
-
-    ) public onlyInsuranceCompany(msg.sender) returns(bool){
+  ) public onlyInsuranceCompany {
     uint256 newCouponId  = _coupons.length;
     Coupon memory newCoupon;
     newCoupon.owner   = _couponOwner;
@@ -101,7 +86,6 @@ contract InsuranceCouponRegistry is ERC721 {
     _mint(msg.sender, newCouponId);
 
     emit CouponCreated(msg.sender,newCouponId);
-    return true;
   }
 
   /**
