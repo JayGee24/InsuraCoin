@@ -87,7 +87,16 @@ contract InsuranceCouponRegistry is ERC721 {
   
     emit CouponCreated(msg.sender,newCouponId);
      
-     return newCouponId;
+    return newCouponId;
+  }
+  /**
+  * @dev Public function called by Insurar when reimpursing
+  * client
+  * @param _couponId uint256
+  */
+  function getCouponInsurar(uint256 _couponId) public onlyInsuranceCompany(){
+    Coupon coupon = _coupons[_couponId];
+    return coupon.company;
   }
 
   /**
