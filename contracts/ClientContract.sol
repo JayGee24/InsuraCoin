@@ -69,5 +69,6 @@ contract ClientContract{
     _ab.signAndPay.value(agreement.couponPrice)(agreementId);
   }
 
+  function() payable {}
 
 }
