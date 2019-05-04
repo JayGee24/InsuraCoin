@@ -49,8 +49,19 @@ contract ClientContract{
     return insurer;
   }
 
-  function proceedWithInsurer(address insurer) {
-    /*insurer.acceptTermsAndProceed(address(this))*/
+  function getInsurerTerms(address insurer) returns (string) {
+    string terms = insurer.getTerms();
+    return terms;
+  }
+
+  function acceptInsurerTerms(address insurer) {
+    insurer.acceptTermsAndProceed(address(this));
+  }
+
+  function pleaseInsureProperty(uint256 propertyId, address insurer) returns bool {
+    bool instantRejection = insurer.queueInsuranceRequest(propertyId, address(this));
+    //client meets standards or not.
+    return instantRejection;
   }
 
   function signAndPay(uint256 agreementId) {
