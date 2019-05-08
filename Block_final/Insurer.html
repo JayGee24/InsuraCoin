@@ -1,0 +1,384 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+/* Full-width input fields */
+input[type=text], input[type=password] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+/* Set a style for all buttons */
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  display: block;
+  text-align: center;
+  
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+/* Center the image and position the close button */
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+  position: relative;
+}
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
+
+img.avatar {
+  width: 40%;
+  border-radius: 50%;
+}
+
+.container {
+  padding: 16px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: red;
+  cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)} 
+  to {-webkit-transform: scale(1)}
+}
+  
+@keyframes animatezoom {
+  from {transform: scale(0)} 
+  to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+  .cancelbtn {
+     width: 100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<h2 id="header" >Welcome! </h2> 
+<p>This is your Insurer portal! Instructions:</p>
+<p>Step 1: Validate the items in the validation table that you want to approve</p>
+<p>Step 2: Collect the cost of insurance in your account!</p>
+<p>Step 3: Enjoy the fact that you have protected your customers!</p>
+
+<script  type="text/javascript">
+    var welcome = "Welcome "
+    document.getElementById("header").innerHTML = welcome.concat(localStorage.insurer)
+  </script>
+
+<!-- <button onclick="document.getElementById('id02').style.display='block'" style="width:auto;"> Insure an Item!</button> -->
+
+<!-- The Modal (contains the Sign Up form) -->
+<div id="id02" class="modal">
+  <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">times;</span>
+  <form class="modal-content" action="/action_page.php">
+    <div class="container">
+      <h1>Insure your item!</h1>
+      <p>Please fill in this form to genereate your insurance coupon</p>
+      <hr>
+      <label for="item"><b>Item Name</b></label>
+      <input type="text" placeholder="Enter item name" name="item" required>
+
+
+      <label for="itemval"><b>Item Value</b></label>
+      <input type="text" placeholder="Enter item value" name="itemval" required>
+
+      <label for="item_validation"><b>Validation</b></label>
+      <input type="text" placeholder="Enter a validation format" name="item_validation" required>
+
+      <p>Choose an insurer!</p>
+      <select>
+        <option value="Life Insurer">Life Insurer</option>
+        <option value="Unique Insurance Co">Unique Insurance Co</option>
+        <option value="BlockaSure">BlockaSure</option>
+        <option value="Geico" selected>Geico</option>
+      </select>
+
+ 
+
+      <p>By selecting this insurer, you agree to their <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
+
+      <div class="clearfix">
+        <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Cancel</button>
+        <button type="button" onclick= "store(); add_to_table(); closer()"  class="submit">Sign Up</button>
+        <!-- "location.href='/Users/gabrielrizk/Desktop/Block_final/new_account.html';"; -->
+        <script  type="text/javascript">
+          function store(){
+             var doc2 = document.getElementById('id02').children
+             var form = doc2[1]
+             var item_name = form[0]
+             var item_val = form[1]
+             var validation_val = form[2]
+             var insur_val = form[3]
+            //  var searchEles = document.getElementById("myDiv").children;
+        //      for(var i = 0; i < form.length; i++) {
+        //         console.log(form[i].tagName, i)
+        //         if(form[i].tagName == 'SELECT' || form.tagName == 'INPUT') {
+        //           console.log("hi")
+        //           matches.push(doc2[i]);
+        // }
+             localStorage.item_name = item_name.value;
+             localStorage.item_val = item_val.value
+             localStorage.validation_val = validation_val.value
+             localStorage.insur_val = insur_val.value
+    }
+          function add_to_table() {
+            let tableRef = document.getElementById("main_table");
+            
+
+            let newRow = tableRef.insertRow(-1);
+
+            let newCell = newRow.insertCell(0);
+            let newCell1 = newRow.insertCell(1)
+            let newCell2 = newRow.insertCell(2)
+            let newCell3 = newRow.insertCell(3)
+
+            let newText = document.createTextNode(localStorage.item_name)
+            let next_text = document.createTextNode("$" + localStorage.item_val);
+            let new_insur = document.createTextNode(localStorage.insur_val)
+            let validation = document.createTextNode(localStorage.validation_val)
+
+            newCell.appendChild(newText)
+            newCell1.appendChild(next_text);
+            newCell2.appendChild(validation)
+            newCell3.appendChild(new_insur)
+          }
+
+          function closer() {
+            console.log("deatr")
+            document.getElementById('id02').style.display='none'
+          }
+// }
+        </script>
+        <!-- <button type="submit" onclick= "../new_account.html"class="signup">Sign Up</button> -->
+      </div>
+    </div>
+  </form>
+</div>
+
+<h3>Waiting to be Insured</h3>
+<table id="main_table">
+  <tr>
+    <th>Item</th>
+    <th>Item Value</th>
+    <th>Validation</th>
+    <th>Insurer</th>
+    <th>Approve?</th>
+  </tr>
+  <tr>
+    <td>Diamonds</td>
+    <td>$10,000</td>
+    <td>Serial: 103913012</td>
+    <td>Geico</td>
+    <td><input type="checkbox" name="check-tab1"></td>
+
+  </tr>
+  <tr>
+    <td>TV</td>
+    <td>$800</td>
+    <td>Serial: 1029391031</td>
+    <td>InsuraCo</td>
+    <td><input type="checkbox" name="check-tab1"></td>
+
+  </tr>
+  <tr>
+    <td>Home</td>
+    <td>$1,000,000</td>
+    <td>Address: 1402 Dirby Drive</td>
+    <td>Geico</td>
+    <td><input type="checkbox" name="check-tab1"></td>
+
+  </tr>
+
+</table>
+
+
+
+
+<!-- <script  type="text/javascript">
+  var table = localStorage.getItem("table")
+  for (var j = 0, col; col = table[j]; j++) {
+    var name = col.name
+    var value = col.value
+    var val = col.val
+    var insurer = insurer
+    console.log(name)
+
+    let tableRef = document.getElementById("main_table");
+            
+
+    let newRow = tableRef.insertRow(-1);
+
+    let newCell = newRow.insertCell(0);
+    let newCell1 = newRow.insertCell(1)
+    let newCell2 = newRow.insertCell(2)
+    let newCell3 = newRow.insertCell(3)
+
+    let newText = document.createTextNode(name.innerText)
+    let next_text = document.createTextNode(value.innerText);
+    let new_insur = document.createTextNode(val.innerText)
+    let validation = document.createTextNode(insurer.innerText)
+
+    newCell.appendChild(newText)
+    newCell1.appendChild(next_text);
+    newCell2.appendChild(validation)
+    newCell3.appendChild(new_insur)
+
+    newCell.appendChild(name)
+    newCell1.appendChild(value);
+    newCell2.appendChild(val)
+    newCell3.appendChild(insurer)
+  }
+
+</script> -->
+
+<h3>Insured Properties</h3>
+<table id="insured">
+    <tr>
+      <th>Item</th>
+      <th>Item Value</th>
+      <th>Validation</th>
+      <th>Insurer</th>
+      <th>Unapprove?</th>
+    </tr>
+  
+  </table>
+  <div class="button">
+    <button onclick="tab1_To_tab2();">Approve</button>
+</div>
+
+<script  type="text/javascript">
+
+  function tab1_To_tab2()
+              {
+                  var table1 = document.getElementById("main_table"),
+                      table2 = document.getElementById("insured"),
+                      checkboxes = document.getElementsByName("check-tab1");
+              console.log("Val1 = " + checkboxes.length);
+                   for(var i = 0; i < checkboxes.length+1; i++)
+                       if(checkboxes[i].checked)
+                          {
+                              // create new row and cells
+                              var newRow = table2.insertRow(table2.length),
+                                  cell1 = newRow.insertCell(0),
+                                  cell2 = newRow.insertCell(1),
+                                  cell3 = newRow.insertCell(2),
+                                  cell4 = newRow.insertCell(3);
+                                  cell5 = newRow.insertCell(4);
+                              // add values to the cells
+                              cell1.innerHTML = table1.rows[i+1].cells[0].innerHTML;
+                              cell2.innerHTML = table1.rows[i+1].cells[1].innerHTML;
+                              cell3.innerHTML = table1.rows[i+1].cells[2].innerHTML;
+                              cell4.innerHTML = table1.rows[i+1].cells[3].innerHTML;
+                              cell5.innerHTML = "<input type='checkbox' name='check-tab2'>";
+                             
+                              // remove the transfered rows from the first table [table1]
+                              var index = table1.rows[i+1].rowIndex;
+                              table1.deleteRow(index);
+                              // we have deleted some rows so the checkboxes.length have changed
+                              // so we have to decrement the value of i
+                              i--;
+                             console.log(checkboxes.length);
+                          }
+              }
+  
+            </script> 
+
+</body>
+</html>

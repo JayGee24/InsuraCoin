@@ -1,0 +1,24 @@
+Imagine, one day, your house gets robbed. You have several very expensive things in
+your home that were stolen, but you have no way to prove that. The police will take a 
+list from you, but the insurer will only pay you a fraction of what was actually lost 
+because they can’t verify that everything you said you owned was actually yours. 
+PropertyCoin will change that. We want to build an app that will essentially store 
+everything that you own. If you want to get insurance on everything, you can show your insurer 
+the chain which shows what you own. If you want to get insurance on certain things, you 
+can make a separate ledger, transfer the PropertyCoin it, and then send that to the insurer 
+(so that the insurer doesn’t know everything that you own) This way, the insurer is protected in 
+that you can not make false claims about ownership, and the owner of the goods is protected in that 
+all of things they want insured will actually get reimbursed if they get stolen.
+
+
+
+
+
+
+
+
+
+
+
+
+
