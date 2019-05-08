@@ -38,7 +38,7 @@ contract InsuranceCouponRegistry is ERC721 {
   }
 
   //ArbitrationContract address
-  address public _ab
+  address public _ab;
 
   //Array of all coupons
   Coupon[] internal _coupons;
@@ -52,7 +52,7 @@ contract InsuranceCouponRegistry is ERC721 {
 
 
   modifier onlyInsuranceCompany() {
-    require(_ab.isRegisteredInsurer(msg.sender) == true, "msg.sender must be an insurance company.");*/
+    require(_ab.isRegisteredInsurer(msg.sender) == true, "msg.sender must be an insurance company.");
     _;
   }
 
