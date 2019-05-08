@@ -22,10 +22,12 @@ contract ClientContract{
   constructor(
     address arbitrationContract,
     address propertyRegistry,
+    address insurerRegistry,
     string  name
   ) public (
     _ab = arbitrationContract;
     _pr = propertyRegistry;
+    _ireg = insurerRegistry;
     _name = name;
     emit ClientCreated(address(this),name);
   )
@@ -45,7 +47,7 @@ contract ClientContract{
   }
 
   function findInsurer() return (address) {
-    address insurer  =  _ab.findRegisteredInsurer();
+    address insurer  =  _ireg.findRegisteredInsurer();
     return insurer;
   }
 
@@ -58,8 +60,8 @@ contract ClientContract{
     insurer.acceptTermsAndProceed(address(this));
   }
 
-  function pleaseInsureProperty(uint256 propertyId, address insurer) returns bool {
-    bool instantRejection = insurer.queueInsuranceRequest(propertyId, address(this));
+  function pleaseInsureProperty(uint256 propertyId, uint256 propertyPrice, address insurer) returns bool {
+    bool instantRejection = insurer.queueInsuranceRequest(propertyId, propertyPrice, address(this));
     //client meets standards or not.
     return instantRejection;
   }
@@ -67,6 +69,13 @@ contract ClientContract{
   function signAndPay(uint256 agreementId) {
     Agreement ag = _agreements[agreementId];
     _ab.signAndPay.value(agreement.couponPrice)(agreementId);
+  }
+
+  function reimburse(uint256 couponId, address insurer)
+  returns (bool){
+    _icr.transferOwnershipToInsurer(couponId,insurer);
+    bool reimbursed = insurer.reimburse(couponId,address(this));
+    return reimbursed;
   }
 
   function() payable {}

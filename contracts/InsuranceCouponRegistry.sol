@@ -68,7 +68,7 @@ contract InsuranceCouponRegistry is ERC721 {
   */
   function createInsuranceCoupon(string _metadata,
     uint256 _daysAfter, address _couponOwner, uint256 _propertyId,
-    uint256 _propertyRegistryAddress
+    address _propertyRegistryAddress
   ) public onlyInsuranceCompany returns (uint256){
     uint256 newCouponId  = _coupons.length;
     Coupon memory newCoupon;
@@ -84,9 +84,9 @@ contract InsuranceCouponRegistry is ERC721 {
     _coupons.push(newCoupon);
 
     _mint(msg.sender, newCouponId);
-  
+
     emit CouponCreated(msg.sender,newCouponId);
-     
+
     return newCouponId;
   }
   /**
@@ -153,6 +153,12 @@ contract InsuranceCouponRegistry is ERC721 {
     }
     return true;
   }
+
+  function getCouponOwner(uint256 _couponId) public
+  returns (address) {
+    return ownerOf(_couponId);
+  }
+
 
   /**
   * @dev Event is triggered if property token is registered

@@ -40,21 +40,25 @@ contract ArbitrationContract {
 
   constuctor (
     address insuranceCouponRegistry,
+    address insurerRegistry,
+    address clientRegistry
   ) {
     _icr = insuranceCouponRegistry;
+    _ireg = insurerRegistry;
+    _creg = clientRegistry;
   }
 
   //Register with ArbitrationContract?
   modifier onlyClient(){
-    //require(_clientAPI.isRegisteredClient(msg.sender),
-    //"caller needs to be a registered client");
+    require(_creg.isRegisteredClient(msg.sender),
+    "caller needs to be a registered client");
     _;
   }
 
   //Register with ArbitrationContract?
   modifier onlyInsuranceCompany(){
-    //require(_companyAPI.isRegisteredCompany(msg.sender));
-    //"caller needs to be a registered company");
+    require(_ireg.isRegisteredCompany(msg.sender));
+    "caller needs to be a registered company");
     _;
   }
 
@@ -115,35 +119,3 @@ contract ArbitrationContract {
     }
     return allowed;
   }
-
-  /**
-  * @dev Registers company as an insurer with this registry
-  * @param insurer address
-  **/
-  function registerInsurer(address insurer) public{
-    //Deliberately skip practical validation that insurance company
-    //physically/legally exists.
-    registeredInsurers[insurer] = true;
-  }
-
-  /**
-  * @dev checks if an address is an insurance company
-  * @param insurer address
-  **/
-  function isRegisteredInsurer(address insurer) view public{
-    return registeredInsurers[insurer];
-  }
-
-  /**
-  * @dev returns a registered an insurance company
-  * @param insurer address
-  **/
-  function findRegisteredInsurer() view public returns (address) {
-    uint256 modVal =  registeredInsurers[insurer].length;
-    if (modVal == 0) {
-      return address(0);
-    }
-    uint256 idx = mod(now,modVal)
-    return registeredInsurer[idx];
-  }
-}

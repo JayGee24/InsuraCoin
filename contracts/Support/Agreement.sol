@@ -11,6 +11,7 @@ library Agreement{
     bool    companySignature;
     uint256 couponId;
     uint256 couponPrice;
+    uint256 propertyPrice;
     uint256 expirationDate;
   }
 }
