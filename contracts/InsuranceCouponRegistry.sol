@@ -45,14 +45,16 @@ contract InsuranceCouponRegistry is ERC721 {
 
   constructor(
     address _arbitrationContract,
+    address _insurerRegistry
   )
   public {
     _ab = _arbitrationContract;
+    _ireg = _insurerRegistry;
   }
 
 
   modifier onlyInsuranceCompany() {
-    require(_ab.isRegisteredInsurer(msg.sender) == true, "msg.sender must be an insurance company.");
+    require(_ireg.isRegisteredInsurer(msg.sender) == true, "msg.sender must be an insurance company.");
     _;
   }
 
@@ -121,6 +123,13 @@ contract InsuranceCouponRegistry is ERC721 {
     require(ownerOf(_couponId) == _ab);
     _coupons[couponId].owner = client;
     transferFrom(_ab,client,couponId);
+  }
+
+  function transferOwnershipToInsurer(uint256 _couponId,
+     address insurer) public {
+    require(ownerOf(_couponId) == msg.sender);
+    _coupons[couponId].owner = insurer;
+    transferFrom(msg.sender,insurer,couponId);
   }
 
   /**
